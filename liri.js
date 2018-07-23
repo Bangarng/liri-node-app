@@ -30,14 +30,11 @@ var getTweets = function() {
     });
 };
 
-//Adding Spotify Keys via NPM Instructions
-var spotify = new Spotify({
-    id: "1e1db30f7a9f42f0a3ad6c72bee7648e",
-    secret: "d4cdd98a96f54b418478c06731be58b8"
-});
-
 //Get Spotify
 var getSpotify = function(songName) {
+    //Adding Spotify Keys via NPM Instructions
+    var spotify = new Spotify(keys.spotify);
+
     if (songName === undefined) {
     songName = "What's my age again";
     }
