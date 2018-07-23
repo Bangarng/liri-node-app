@@ -13,7 +13,7 @@ var fs = require("fs");
 
 //Get Tweets
 var getTweets = function() {
-    var client = new Twitter(keys.twitterKeys);
+    var client = new Twitter(keys.twitter);
     var params = {
         screen_name: "BTMComic"
     };
@@ -24,6 +24,8 @@ var getTweets = function() {
                 console.log("");
                 console.log(tweets[i].text);
             }
+        } else {
+            console.log("An error occured");
         }
     });
 };
@@ -103,6 +105,7 @@ var getSpotify = function(songName) {
       }
     });
   };
+
   // Function for determining which command is executed
   var pick = function(caseData, functionData) {
     switch (caseData) {
