@@ -13,120 +13,128 @@ var fs = require("fs");
 
 //Get Tweets
 var getTweets = function() {
+    //NPM Instructions + push data
     var client = new Twitter(keys.twitter);
     var params = {
         screen_name: "BTMComic"
     };
     client.get("statuses/user_timeline", params, function(error, tweets, response) {
         if (!error) {
-            for (var i = 0; i < tweets.length; i++) {
+            for (var i = 0; i < 20; i++) {
                 console.log(tweets[i].created_at);
-                console.log("");
                 console.log(tweets[i].text);
+                console.log("");
             }
         } else {
             console.log("An error occured");
+            console.log("Response: ", response);
         }
     });
 };
 
 //Get Spotify
 var getSpotify = function(songName) {
-    //Adding Spotify Keys via NPM Instructions
+    //Code via NPM Instructions
     var spotify = new Spotify(keys.spotify);
 
     if (songName === undefined) {
     songName = "What's my age again";
     }
 
-    //NPM Instructions
     spotify.search({
         type: "track",
         query: songName
     },
-    function(err, data) {
-        if (err) {
-        console.log("Error occurred: " + err);
-        return;
+        function(err, data) {
+            if (err) {
+                console.log("Error occurred: " + err);
+                return;
+            }
+            //spit out the data
+            var spotifyData = data.tracks.items;
+            for (var i = 0; i < spotifyData.length; i++) {
+                //console.log(spotifyData[i].artists[i]);
+                console.log("-----------------------------------");
+                console.log(i);
+                console.log("Artist(s): " + spotifyData[i].artists[0].name);
+                console.log("Song Name: " + spotifyData[i].name);
+                console.log("Preview Song: " + spotifyData[i].preview_url);
+                console.log("Album: " + spotifyData[i].album.name);
+                console.log("-----------------------------------");
+            }
         }
-        //spit out the data
-        var spotifyData = data.tracks.items;
-        for (var i = 0; i < spotifyData.length; i++) {
-        //console.log(spotifyData[i].artists[i]);
-        console.log("-----------------------------------");
-        console.log(i);
-        console.log("Artist(s): " + spotifyData[i].artists[0].name);
-        console.log("Song Name: " + spotifyData[i].name);
-        console.log("Preview Song: " + spotifyData[i].preview_url);
-        console.log("Album: " + spotifyData[i].album.name);
-        console.log("-----------------------------------");
-        }
-    }
     );
 };
 
-  //Get Movie
-  var getMovie = function(movieName) {
+//Get Movie
+var getMovie = function(movieName) {
     if (movieName === undefined) {
-      movieName = "Predator";
+        movieName = "Predator";
     }
+    //Build API Call
     var OMDBLookup = "http://www.omdbapi.com/?t=" + movieName + "&apikey=c7c1637c";
+    //Request NPM Instructions
     request(OMDBLookup, function(error, response, body) {
-      if (!error) {
+        if (!error) {
         var movieData = JSON.parse(body);
-        console.log("Title: " + movieData.Title);
-        console.log("Year: " + movieData.Year);
-        console.log("IMDB Rating: " + movieData.imdbRating);
-        console.log("Rottem Tomatoes Rating: " + movieData.Ratings[1].Value);
-        console.log("Country: " + movieData.Country);
-        console.log("Language: " + movieData.Language);
-        console.log("Plot: " + movieData.Plot);
-        console.log("Actors: " + movieData.Actors);
-      } else {
-          console.log("error:", error);
-          console.log("statusCode:", response && response.statusCode);
-      }
+            console.log("Title: " + movieData.Title);
+            console.log("Year: " + movieData.Year);
+            console.log("IMDB Rating: " + movieData.imdbRating);
+            console.log("Rottem Tomatoes Rating: " + movieData.Ratings[1].Value);
+            console.log("Country: " + movieData.Country);
+            console.log("Language: " + movieData.Language);
+            console.log("Plot: " + movieData.Plot);
+            console.log("Actors: " + movieData.Actors);
+        } else {
+            console.log("error:", error);
+            console.log("statusCode:", response && response.statusCode);
+        }
     });
   };
 
-  // Function for running a command based on text file
-  var doWhatItSays = function() {
+//Read the random.txt file
+var doWhatItSays = function() {
     fs.readFile("random.txt", "utf8", function(error, data) {
-      console.log(data);
-      var dataArr = data.split(",");
-      if (dataArr.length === 2) {
-        pick(dataArr[0], dataArr[1]);
-      }
-      else if (dataArr.length === 1) {
-        pick(dataArr[0]);
-      }
+        console.log(data);
+        var dataArr = data.split(",");
+        if (dataArr.length === 2) {
+            runApp(dataArr[0], dataArr[1]);
+        }
+        else if (dataArr.length === 1) {
+            runApp(dataArr[0]);
+        }
     });
-  };
+};
 
-  // Function for determining which command is executed
-  var pick = function(caseData, functionData) {
-    switch (caseData) {
-      case "my-tweets":
+//Execute the command
+var runApp = function(request, lookup) {
+    switch (request) {
+        case "my-tweets":
         getTweets();
         break;
-      case "spotify-this-song":
-        getSpotify(functionData);
+
+        case "spotify-this-song":
+        getSpotify(lookup);
         break;
-      case "movie-this":
-        getMovie(functionData);
+
+        case "movie-this":
+        getMovie(lookup);
         break;
-      case "do-what-it-says":
+
+        case "do-what-it-says":
         doWhatItSays();
         break;
-      default:
+        
+        default:
         console.log("LIRI doesn't know that");
     }
-  };
-  // Function which takes in command line arguments and executes correct function accordigly
-  var runThis = function(argOne, argTwo) {
-    pick(argOne, argTwo);
-  };
-  // MAIN PROCESS
-  // =====================================
-  runThis(process.argv[2], process.argv[3]);
+};
+
+//reads command line and starts the application
+var runThis = function(argOne, argTwo) {
+    runApp(argOne, argTwo);
+};
+
+//starting the app
+runThis(process.argv[2], process.argv[3]);
   
