@@ -26,14 +26,19 @@ var getTweets = function() {
         }
     });
 };
-  
+
+//Adding Spotify Keys via NPM Instructions
+var spotify = new Spotify({
+    id: "1e1db30f7a9f42f0a3ad6c72bee7648e",
+    secret: "d4cdd98a96f54b418478c06731be58b8"
+});
+
 // Get Spotify
 var getSpotify = function(songName) {
     if (songName === undefined) {
     songName = "What's my age again";
     }
-    spotify.search(
-    {
+    spotify.search({
         type: "track",
         query: songName
     },
@@ -42,13 +47,16 @@ var getSpotify = function(songName) {
         console.log("Error occurred: " + err);
         return;
         }
-        var songs = data.tracks.items;
-        for (var i = 0; i < songs.length; i++) {
+
+        var spotifyData = data.tracks.items;
+        for (var i = 0; i < spotifyData.length; i++) {
+        //console.log(spotifyData[i].artists[i]);
+        console.log("-----------------------------------");
         console.log(i);
-        console.log("artist(s): " + songs[i].artists.map(getArtistNames));
-        console.log("song name: " + songs[i].name);
-        console.log("preview song: " + songs[i].preview_url);
-        console.log("album: " + songs[i].album.name);
+        console.log("Artist(s): " + spotifyData[i].artists[0].name);
+        console.log("Song Name: " + spotifyData[i].name);
+        console.log("Preview Song: " + spotifyData[i].preview_url);
+        console.log("Album: " + spotifyData[i].album.name);
         console.log("-----------------------------------");
         }
     }
