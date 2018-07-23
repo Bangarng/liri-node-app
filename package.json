@@ -8,5 +8,10 @@
   "keywords": [],
   "author": "Rich Kearse",
   "license": "ISC",
-  "description": "Homework Assignment #9 for GW Code Bootcamp"
+  "description": "Homework Assignment #9 for GW Code Bootcamp",
+  "dependencies": {
+    "node-spotify-api": "^1.0.7",
+    "request": "^2.87.0",
+    "twitter": "^1.7.1"
+  }
 }
