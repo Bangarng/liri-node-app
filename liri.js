@@ -1,4 +1,5 @@
-//require("dotenv").config();
+//dotenv instsall
+require("dotenv").config();
 //get dem keys
 var keys = require("./keys.js");
 //get dem twitters
@@ -33,11 +34,13 @@ var spotify = new Spotify({
     secret: "d4cdd98a96f54b418478c06731be58b8"
 });
 
-// Get Spotify
+//Get Spotify
 var getSpotify = function(songName) {
     if (songName === undefined) {
     songName = "What's my age again";
     }
+
+    //NPM Instructions
     spotify.search({
         type: "track",
         query: songName
@@ -47,7 +50,7 @@ var getSpotify = function(songName) {
         console.log("Error occurred: " + err);
         return;
         }
-
+        //spit out the data
         var spotifyData = data.tracks.items;
         for (var i = 0; i < spotifyData.length; i++) {
         //console.log(spotifyData[i].artists[i]);
@@ -63,27 +66,30 @@ var getSpotify = function(songName) {
     );
 };
 
-  // Function for running a Movie Search
+  //Get Movie
   var getMovie = function(movieName) {
     if (movieName === undefined) {
-      movieName = "Mr Nobody";
+      movieName = "Predator";
     }
-    var urlHit = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=full&tomatoes=true&apikey=40e9cece";
-    request(urlHit, function(error, response, body) {
-      if (!error && response.statusCode === 200) {
-        var jsonData = JSON.parse(body);
-        console.log("Title: " + jsonData.Title);
-        console.log("Year: " + jsonData.Year);
-        console.log("Rated: " + jsonData.Rated);
-        console.log("IMDB Rating: " + jsonData.imdbRating);
-        console.log("Country: " + jsonData.Country);
-        console.log("Language: " + jsonData.Language);
-        console.log("Plot: " + jsonData.Plot);
-        console.log("Actors: " + jsonData.Actors);
-        console.log("Rotton Tomatoes URL: " + jsonData.tomatoURL);
+    var OMDBLookup = "http://www.omdbapi.com/?t=" + movieName + "&apikey=c7c1637c";
+    request(OMDBLookup, function(error, response, body) {
+      if (!error) {
+        var movieData = JSON.parse(body);
+        console.log("Title: " + movieData.Title);
+        console.log("Year: " + movieData.Year);
+        console.log("IMDB Rating: " + movieData.imdbRating);
+        console.log("Rottem Tomatoes Rating: " + movieData.Ratings[1].Value);
+        console.log("Country: " + movieData.Country);
+        console.log("Language: " + movieData.Language);
+        console.log("Plot: " + movieData.Plot);
+        console.log("Actors: " + movieData.Actors);
+      } else {
+          console.log("error:", error);
+          console.log("statusCode:", response && response.statusCode);
       }
     });
   };
+
   // Function for running a command based on text file
   var doWhatItSays = function() {
     fs.readFile("random.txt", "utf8", function(error, data) {
